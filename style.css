@@ -1,0 +1,255 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
+
+*,
+::after,
+::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  background-color: #e0e3e2;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-image: linear-gradient(to bottom, #94c18b, #4fae7d);
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  font-size: calc(100vw / 1920 * 10);
+  font-family: "Roboto", sans-serif;
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 1280px) {
+  html {
+    font-size: calc(100vw / 1280 * 10);
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  html {
+    font-size: calc(100vw / 768 * 10);
+  }
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: #f6f9f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.square {
+  position: absolute;
+  left: 4rem;
+  font-size: 2rem;
+  color: #c0c0c0;
+  bottom: 4rem;
+  z-index: 46;
+}
+
+.title-mini {
+  position: absolute;
+  top: 4rem;
+  left: 4rem;
+  color: #e9fff3;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  z-index: 44;
+}
+
+.history {
+  position: absolute;
+  right: 4rem;
+  top: 4rem;
+  z-index: 49;
+  color: #ababab;
+  text-align: right;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.history__container {
+  /* opacity: 0; */
+  position: absolute;
+  right: 0;
+  background-color: #f6f9f8;
+  z-index: 45;
+  height: 100%;
+  width: 50rem;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 4rem 6rem;
+}
+
+.history__container--content {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 60rem;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 0 4rem;
+  gap: 2rem;
+  /* background-color: black; */
+}
+
+.history__container--content__item {
+  padding: 2rem;
+  width: 100%;
+  font-size: 3rem;
+  border-radius: 15px;
+  color: #3f4860;
+  /* background-color: #85c975; */
+}
+
+.square:nth-of-type(2) {
+  left: auto;
+  right: 4rem;
+}
+
+.overlay {
+  width: 100%;
+  height: 35rem;
+  position: absolute;
+  top: 0;
+  background-image: linear-gradient(to bottom, #85c975, #4fae7d 60%);
+  z-index: 20;
+}
+
+.title {
+  color: #eff2f1;
+  position: absolute;
+  font-size: 16rem;
+  transform: rotate(-90deg);
+  font-weight: 900;
+  top: 60rem;
+  left: 6rem;
+  text-transform: uppercase;
+}
+
+.app {
+  width: 50rem;
+  height: 80rem;
+  background-color: #ffffff;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-radius: 40px;
+  z-index: 50;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.app--view {
+  height: 34.8rem;
+  width: 100%;
+  padding: 2rem 3rem;
+  display: flex;
+  justify-content: end;
+  gap: 2rem;
+  flex-direction: column;
+  background-image: linear-gradient(to bottom, #8ed675, #6abb74 60%);
+}
+
+.app--view-result {
+  font-size: 5rem;
+  color: #e9fff3;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app--view-step {
+  font-size: 3.5rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  color: #adf3ae;
+}
+
+.app--numbers {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  font-size: 4rem;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  column-gap: 2rem;
+  row-gap: 1rem;
+  padding: 3.5rem;
+}
+
+.highlight {
+  background-color: #f8f8f8;
+  border-radius: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.highlight--row {
+  grid-column: 1/4;
+}
+
+.highlight--col {
+  flex-direction: column;
+  grid-column: 4;
+  grid-row: 1/6;
+}
+
+.highlight--col > p:last-of-type {
+  background-image: linear-gradient(to bottom, #93cd83, #59b586 60%);
+  color: #dcffed;
+}
+
+.highlight > p {
+  color: #3f4860;
+}
+
+.app--numbers > p {
+  color: #3f4860;
+}
+
+.app--numbers p {
+  align-self: center;
+  justify-self: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 3rem;
+  width: 8rem;
+  height: 8rem;
+  transition: all 0.2s ease-out;
+}
+
+.app--numbers p:hover {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+@media only screen and (max-width: 486px) {
+  .app {
+    width: 100%;
+    height: 100%;
+  }
+}

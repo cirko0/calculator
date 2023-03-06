@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+    <script
+      defer
+      src="https://kit.fontawesome.com/78e8c79e31.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="overlay"></div>
+    <h1 class="title">Calculator</h1>
+    <p class="square"><i class="fa-solid fa-square"></i></p>
+    <p class="square"><i class="fa-solid fa-square"></i></p>
+    <p class="title-mini">Calculator</p>
+    <p class="history">history</p>
+    <div class="history__container">
+      <div class="history__container--content">
+        <div class="history__container--content__item">
+          2+2 <br />
+          =4
+        </div>
+      </div>
+    </div>
+    <div class="app">
+      <div class="app--view">
+        <div class="app--view-step">
+          <p id="step">2+2</p>
+        </div>
+        <div class="app--view-result">
+          <p>=</p>
+          <p id="result">4</p>
+        </div>
+      </div>
+      <div class="app--numbers">
+        <div class="highlight highlight--row">
+          <p id="clear">AC</p>
+          <p id="sign">+/-</p>
+          <p id="percentage">%</p>
+        </div>
+        <div class="highlight highlight--col">
+          <p id="divide">÷</p>
+          <p id="multiply">×</p>
+          <p id="minus">-</p>
+          <p id="plus">+</p>
+          <p id="equals">=</p>
+        </div>
+        <p>7</p>
+        <p>8</p>
+        <p>9</p>
+        <p>4</p>
+        <p>5</p>
+        <p>6</p>
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+        <p id="dot">.</p>
+        <p id="zero">0</p>
+        <p id="deleteOne">DEL</p>
+      </div>
+    </div>
+  </body>
+</html>
