@@ -93,6 +93,19 @@ body {
   justify-content: center;
   flex-direction: column;
   padding: 4rem 6rem;
+  gap: 5rem;
+}
+
+.history__container > a {
+  background-image: linear-gradient(to bottom, #93cd83, #59b586 60%);
+  color: #dcffed;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 2rem;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 1rem;
 }
 
 .history__container--content {

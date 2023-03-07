@@ -13,6 +13,12 @@ const calcBtns = document.querySelectorAll(".highlight--col>p");
 const deleteOne = document.getElementById("deleteOne");
 // FUNCTIONS
 
+let history = [];
+
+function setLocalStorage() {
+  localStorage.setItem("history", JSON.stringify(history));
+}
+
 const replaceSigns = (resultChanged) => {
   if (result.innerHTML.includes("×"))
     resultChanged = result.innerHTML.replace("×", "*");
@@ -86,13 +92,12 @@ const calculate = () => {
         step.innerHTML = resultChanged;
         resultChanged = replaceSigns(resultChanged);
         result.innerHTML = formatNumber(eval(unformatNumber(resultChanged)));
-        const html = `<div class="history__container--content__item">
-        ${resultChanged}<br />
-        =${result.innerHTML}
-      </div>`;
-        document
-          .querySelector(".history__container--content")
-          .insertAdjacentHTML("afterbegin", html);
+
+        history.push({ step: resultChanged, result: result.innerHTML });
+        localStorage.clear();
+        document.querySelector(".history__container--content").innerHTML = "";
+        setLocalStorage();
+        renderLocalStorage();
       }
     } else {
       if (
@@ -103,13 +108,12 @@ const calculate = () => {
         step.innerHTML = resultChanged;
         resultChanged = replaceSigns(resultChanged);
         result.innerHTML = formatNumber(eval(unformatNumber(resultChanged)));
-        const html = `<div class="history__container--content__item">
-        ${resultChanged}<br />
-        =${result.innerHTML}
-      </div>`;
-        document
-          .querySelector(".history__container--content")
-          .insertAdjacentHTML("afterbegin", html);
+
+        history.push({ step: resultChanged, result: result.innerHTML });
+        localStorage.clear();
+        document.querySelector(".history__container--content").innerHTML = "";
+        setLocalStorage();
+        renderLocalStorage();
       }
     }
   });
@@ -273,4 +277,28 @@ clear.addEventListener("click", () => {
 
   result.innerHTML = "";
   step.innerHTML = "";
+});
+
+function renderLocalStorage() {
+  const data = JSON.parse(localStorage.getItem("history"));
+  if (!data) return;
+
+  history = data;
+
+  data.forEach((el) => {
+    const html = `<div class="history__container--content__item">
+    ${el.step}<br />
+    =${el.result}
+  </div>`;
+    document
+      .querySelector(".history__container--content")
+      .insertAdjacentHTML("afterbegin", html);
+  });
+}
+
+renderLocalStorage();
+
+document.getElementById("clear-history").addEventListener("click", function () {
+  localStorage.removeItem("history");
+  location.reload();
 });
