@@ -1,5 +1,6 @@
 // Fix rounding
-// Fix addDot()
+// Validation
+// Transitions
 
 class App {
   history: { step: string; result: string }[] = [];
@@ -11,73 +12,133 @@ class App {
   constructor() {
     this.result = document.querySelector('#result')!;
     this.step = document.querySelector('#step')!;
-    this.renderLocalStorage();
+
     this.configure();
+    this.renderLocalStorage();
   }
 
-  addNumbers() {
+  configure() {
     (
       document.querySelectorAll(
         '.app--numbers>p'
       ) as NodeListOf<HTMLParagraphElement>
     ).forEach(btn => {
       btn.addEventListener('click', e => {
-        if (btn.id === 'deleteOne' && this.result.innerHTML !== ' ') {
-          this.deleteOne();
-          return;
-        }
-        if (btn.id === 'dot' && this.result.innerHTML !== ' ') {
-          this.addDot(e);
-          return;
-        }
-
-        if (this.result.innerHTML === '0') {
-          this.result.innerHTML = this.result.innerHTML.replace(
-            '0',
-            btn.innerHTML
-          );
-          return;
-        }
-
-        if (
-          this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1) === '0'
-        ) {
-          console.log(
-            this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1)
-          );
-          this.result.innerHTML =
-            this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
-            this.result.innerHTML
-              .slice(this.hasSign(this.signs).pos + 1)
-              .replace('0', btn.innerHTML);
-
-          return;
-        }
-
-        if (this.result.innerHTML.includes('.')) {
-          this.result.innerHTML = this.result.innerHTML + btn.innerHTML;
-          return;
-        }
-        if (this.hasSign(this.signs).hasSign) {
-          this.result.innerHTML = this.result.innerHTML + btn.innerHTML;
-
-          this.result.innerHTML =
-            this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
-            this.formatNumber(
-              +this.unformatNumber(
-                this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1)
-              )
-            );
-
-          return;
-        }
-        this.result.innerHTML = this.result.innerHTML + btn.innerHTML;
-
-        this.result.innerHTML = this.formatNumber(
-          +this.unformatNumber(this.result.innerHTML)
-        );
+        this.addNumbers(btn, e);
       });
     });
+    (
+      document.querySelectorAll(
+        '.highlight--col>p'
+      )! as NodeListOf<HTMLParagraphElement>
+    ).forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.addAndChangeSigns(btn);
+      });
+    });
+
+    document
+      .querySelector('.history__icon')!
+      .addEventListener('click', function () {
+        document.querySelector('.history__container')!.classList.add('open');
+      });
+    document
+      .querySelector('.history__container > i')!
+      .addEventListener('click', function () {
+        document.querySelector('.history__container')!.classList.remove('open');
+      });
+    document
+      .getElementById('clear-history')!
+      .addEventListener('click', this.clearLocalStorage.bind(this));
+
+    document
+      .getElementById('clear')!
+      .addEventListener('click', this.clearResult.bind(this));
+
+    document
+      .getElementById('sign')!
+      .addEventListener('click', this.changeSignOfNumber.bind(this));
+
+    document
+      .getElementById('percentage')!
+      .addEventListener('click', this.percentageNumber.bind(this));
+  }
+
+  addNumbers(btn: HTMLParagraphElement, e: any) {
+    if (btn.id === 'deleteOne' && this.result.innerHTML !== ' ') {
+      this.deleteOne();
+      return;
+    }
+
+    if (btn.id === 'dot' && this.result.innerHTML !== ' ') {
+      this.addDot(e);
+      return;
+    }
+
+    if (this.result.innerHTML === '0') {
+      this.result.innerHTML = this.result.innerHTML.replace('0', btn.innerHTML);
+      return;
+    }
+
+    if (this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1) === '0') {
+      console.log(
+        this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1)
+      );
+      this.result.innerHTML =
+        this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
+        this.result.innerHTML
+          .slice(this.hasSign(this.signs).pos + 1)
+          .replace('0', btn.innerHTML);
+
+      return;
+    }
+
+    if (this.result.innerHTML.includes('.')) {
+      this.result.innerHTML = this.result.innerHTML + btn.innerHTML;
+      return;
+    }
+    if (this.hasSign(this.signs).hasSign) {
+      this.result.innerHTML = this.result.innerHTML + btn.innerHTML;
+
+      this.result.innerHTML =
+        this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
+        this.formatNumber(
+          +this.unformatNumber(
+            this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1)
+          )
+        );
+
+      return;
+    }
+    this.result.innerHTML = this.result.innerHTML + btn.innerHTML;
+
+    this.result.innerHTML = this.formatNumber(
+      +this.unformatNumber(this.result.innerHTML)
+    );
+  }
+
+  addAndChangeSigns(calc: HTMLParagraphElement) {
+    this.calculate();
+
+    if (this.restrictBtns(['equals'], calc.id)) return;
+
+    if (this.result.innerHTML.slice(-1) === '.') return;
+
+    this.signs.forEach(sign => {
+      if (
+        this.prev != calc.innerHTML &&
+        this.result.innerHTML.slice(-1).includes(sign)
+      ) {
+        this.result.innerHTML =
+          this.result.innerHTML.slice(0, this.result.innerHTML.length - 1) +
+          this.result.innerHTML.slice(-1).replace(this.prev, calc.innerHTML);
+        this.prev = calc.innerHTML;
+      }
+    });
+
+    if (this.duplicateSigns(this.signs) || this.result.innerHTML === '') return;
+    this.result.innerHTML = this.result.innerHTML + calc.innerHTML;
+    this.prev = this.result.innerHTML.slice(-1);
   }
 
   calculate(): void {
@@ -176,75 +237,6 @@ class App {
     this.result.innerHTML = this.result.innerHTML + e.target.innerHTML;
   }
 
-  configure() {
-    this.addNumbers();
-
-    (
-      document.querySelectorAll(
-        '.highlight--col>p'
-      )! as NodeListOf<HTMLParagraphElement>
-    ).forEach(btn => {
-      btn.addEventListener('click', () => {
-        this.changeSigns(btn);
-      });
-    });
-
-    document
-      .querySelector('.history__icon')!
-      .addEventListener('click', function () {
-        document.querySelector('.history__container')!.classList.add('open');
-      });
-    document
-      .querySelector('.history__container > i')!
-      .addEventListener('click', function () {
-        document.querySelector('.history__container')!.classList.remove('open');
-      });
-    document
-      .getElementById('clear-history')!
-      .addEventListener('click', this.clearLocalStorage.bind(this));
-
-    document
-      .getElementById('clear')!
-      .addEventListener('click', this.clearResult.bind(this));
-
-    document
-      .getElementById('sign')!
-      .addEventListener('click', this.changeSignOfNumber.bind(this));
-
-    document
-      .getElementById('percentage')!
-      .addEventListener('click', this.percentageNumber.bind(this));
-  }
-
-  clearLocalStorage() {
-    localStorage.removeItem('history');
-    location.reload();
-  }
-
-  changeSigns(calc: HTMLParagraphElement) {
-    this.calculate();
-
-    if (this.restrictBtns(['equals'], calc.id)) return;
-
-    if (this.result.innerHTML.slice(-1) === '.') return;
-
-    this.signs.forEach(sign => {
-      if (
-        this.prev != calc.innerHTML &&
-        this.result.innerHTML.slice(-1).includes(sign)
-      ) {
-        this.result.innerHTML =
-          this.result.innerHTML.slice(0, this.result.innerHTML.length - 1) +
-          this.result.innerHTML.slice(-1).replace(this.prev, calc.innerHTML);
-        this.prev = calc.innerHTML;
-      }
-    });
-
-    if (this.duplicateSigns(this.signs) || this.result.innerHTML === '') return;
-    this.result.innerHTML = this.result.innerHTML + calc.innerHTML;
-    this.prev = this.result.innerHTML.slice(-1);
-  }
-
   replaceSigns = (resultChanged: string) => {
     if (this.result.innerHTML.includes('×'))
       resultChanged = this.result.innerHTML.replace('×', '*');
@@ -317,6 +309,11 @@ class App {
     });
     return bool;
   };
+
+  clearLocalStorage() {
+    localStorage.removeItem('history');
+    location.reload();
+  }
 
   clearResult() {
     if (this.result.innerHTML === '') return;
