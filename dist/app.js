@@ -121,6 +121,16 @@ class App {
             btn.addEventListener('click', this.calculate.bind(this));
         });
         document
+            .querySelector('.history__icon')
+            .addEventListener('click', function () {
+            document.querySelector('.history__container').classList.add('open');
+        });
+        document
+            .querySelector('.history__container > i')
+            .addEventListener('click', function () {
+            document.querySelector('.history__container').classList.remove('open');
+        });
+        document
             .getElementById('clear-history')
             .addEventListener('click', this.clearLocalStorage.bind(this));
         document
@@ -180,9 +190,6 @@ class App {
     }
     formatNumber(number) {
         if (number > 999 || number < -999) {
-            console.log(number.toLocaleString(undefined, {
-                minimumFractionDigits: 1,
-            }));
             return number.toLocaleString();
         }
         else {
