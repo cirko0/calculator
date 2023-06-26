@@ -96,6 +96,10 @@ class App {
         });
     }
     deleteOne() {
+        if (this.result.innerHTML.includes('.')) {
+            this.result.innerHTML = this.result.innerHTML.slice(0, this.result.innerHTML.length - 1);
+            return;
+        }
         if (this.hasSign(this.signs)) {
             if (this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1).length > 2) {
                 this.result.innerHTML = this.result.innerHTML.slice(0, this.result.innerHTML.length - 1);
