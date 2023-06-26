@@ -96,6 +96,17 @@ class App {
         });
     }
     deleteOne() {
+        if (this.hasSign(this.signs)) {
+            if (this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1).length > 2) {
+                this.result.innerHTML = this.result.innerHTML.slice(0, this.result.innerHTML.length - 1);
+                this.result.innerHTML =
+                    this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
+                        this.formatNumber(+this.unformatNumber(this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1)));
+                return;
+            }
+            this.result.innerHTML = this.result.innerHTML.slice(0, this.result.innerHTML.length - 1);
+            return;
+        }
         this.result.innerHTML = this.result.innerHTML.slice(0, this.result.innerHTML.length - 1);
         this.result.innerHTML = this.formatNumber(+this.unformatNumber(this.result.innerHTML));
     }
@@ -176,7 +187,7 @@ class App {
             if (this.result.innerHTML.startsWith('-')) {
                 if (this.result.innerHTML.slice(1).includes(sign)) {
                     hasSign = true;
-                    pos = this.result.innerHTML.indexOf(sign);
+                    pos = this.result.innerHTML.slice(1).indexOf(sign);
                 }
             }
             else {
