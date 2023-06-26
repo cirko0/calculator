@@ -3,6 +3,7 @@ class App {
     constructor() {
         this.history = [];
         this.signs = ['+', '-', '÷', '×'];
+        this.prev = '';
         this.replaceSigns = (resultChanged) => {
             if (this.result.innerHTML.includes('×'))
                 resultChanged = this.result.innerHTML.replace('×', '*');
@@ -53,6 +54,15 @@ class App {
                 }
                 if (this.result.innerHTML === '0') {
                     this.result.innerHTML = this.result.innerHTML.replace('0', btn.innerHTML);
+                    return;
+                }
+                if (this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1) === '0') {
+                    console.log(this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1));
+                    this.result.innerHTML =
+                        this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
+                            this.result.innerHTML
+                                .slice(this.hasSign(this.signs).pos + 1)
+                                .replace('0', btn.innerHTML);
                     return;
                 }
                 if (this.result.innerHTML.includes('.')) {
@@ -120,7 +130,8 @@ class App {
         if (this.hasSign(this.signs).hasSign) {
             if (!this.result.innerHTML
                 .slice(this.hasSign(this.signs).pos + 1)
-                .includes('.')) {
+                .includes('.') &&
+                !isNaN(+this.result.innerHTML.slice(-1))) {
                 this.result.innerHTML = this.result.innerHTML + e.target.innerHTML;
             }
             return;
@@ -130,10 +141,11 @@ class App {
         this.result.innerHTML = this.result.innerHTML + e.target.innerHTML;
     }
     configure() {
-        this.changeSigns();
         this.addNumbers();
         document.querySelectorAll('.highlight--col>p').forEach(btn => {
-            btn.addEventListener('click', this.calculate.bind(this));
+            btn.addEventListener('click', () => {
+                this.changeSigns(btn);
+            });
         });
         document
             .querySelector('.history__icon')
@@ -162,27 +174,25 @@ class App {
         localStorage.removeItem('history');
         location.reload();
     }
-    changeSigns() {
-        let prev;
-        document.querySelectorAll('.highlight--col>p').forEach((calc) => {
-            calc.addEventListener('click', () => {
-                if (this.restrictBtns(['equals'], calc.id))
-                    return;
-                this.signs.forEach(sign => {
-                    if (prev != calc.innerHTML &&
-                        this.result.innerHTML.slice(-1).includes(sign)) {
-                        this.result.innerHTML =
-                            this.result.innerHTML.slice(0, this.result.innerHTML.length - 1) +
-                                this.result.innerHTML.slice(-1).replace(prev, calc.innerHTML);
-                        prev = calc.innerHTML;
-                    }
-                });
-                if (this.duplicateSigns(this.signs) || this.result.innerHTML === '')
-                    return;
-                this.result.innerHTML = this.result.innerHTML + calc.innerHTML;
-                prev = this.result.innerHTML.slice(-1);
-            });
+    changeSigns(calc) {
+        this.calculate();
+        if (this.restrictBtns(['equals'], calc.id))
+            return;
+        if (this.result.innerHTML.slice(-1) === '.')
+            return;
+        this.signs.forEach(sign => {
+            if (this.prev != calc.innerHTML &&
+                this.result.innerHTML.slice(-1).includes(sign)) {
+                this.result.innerHTML =
+                    this.result.innerHTML.slice(0, this.result.innerHTML.length - 1) +
+                        this.result.innerHTML.slice(-1).replace(this.prev, calc.innerHTML);
+                this.prev = calc.innerHTML;
+            }
         });
+        if (this.duplicateSigns(this.signs) || this.result.innerHTML === '')
+            return;
+        this.result.innerHTML = this.result.innerHTML + calc.innerHTML;
+        this.prev = this.result.innerHTML.slice(-1);
     }
     hasSign(signs) {
         let hasSign = false;

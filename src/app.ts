@@ -1,8 +1,12 @@
+// Fix rounding
+// Fix addDot()
+
 class App {
   history: { step: string; result: string }[] = [];
   signs: string[] = ['+', '-', '÷', '×'];
   result: HTMLParagraphElement;
   step: HTMLParagraphElement;
+  prev: string = '';
 
   constructor() {
     this.result = document.querySelector('#result')!;
@@ -32,6 +36,21 @@ class App {
             '0',
             btn.innerHTML
           );
+          return;
+        }
+
+        if (
+          this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1) === '0'
+        ) {
+          console.log(
+            this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1)
+          );
+          this.result.innerHTML =
+            this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
+            this.result.innerHTML
+              .slice(this.hasSign(this.signs).pos + 1)
+              .replace('0', btn.innerHTML);
+
           return;
         }
 
@@ -144,7 +163,8 @@ class App {
       if (
         !this.result.innerHTML
           .slice(this.hasSign(this.signs).pos + 1)
-          .includes('.')
+          .includes('.') &&
+        !isNaN(+this.result.innerHTML.slice(-1))
       ) {
         this.result.innerHTML = this.result.innerHTML + e.target.innerHTML;
       }
@@ -157,13 +177,18 @@ class App {
   }
 
   configure() {
-    this.changeSigns();
-
     this.addNumbers();
 
-    document.querySelectorAll('.highlight--col>p')!.forEach(btn => {
-      btn.addEventListener('click', this.calculate.bind(this));
+    (
+      document.querySelectorAll(
+        '.highlight--col>p'
+      )! as NodeListOf<HTMLParagraphElement>
+    ).forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.changeSigns(btn);
+      });
     });
+
     document
       .querySelector('.history__icon')!
       .addEventListener('click', function () {
@@ -196,36 +221,28 @@ class App {
     location.reload();
   }
 
-  changeSigns() {
-    let prev: string;
+  changeSigns(calc: HTMLParagraphElement) {
+    this.calculate();
 
-    (
-      document.querySelectorAll(
-        '.highlight--col>p'
-      ) as NodeListOf<HTMLParagraphElement>
-    ).forEach((calc: HTMLParagraphElement) => {
-      calc.addEventListener('click', () => {
-        if (this.restrictBtns(['equals'], calc.id)) return;
+    if (this.restrictBtns(['equals'], calc.id)) return;
 
-        this.signs.forEach(sign => {
-          if (
-            prev != calc.innerHTML &&
-            this.result.innerHTML.slice(-1).includes(sign)
-          ) {
-            this.result.innerHTML =
-              this.result.innerHTML.slice(0, this.result.innerHTML.length - 1) +
-              this.result.innerHTML.slice(-1).replace(prev, calc.innerHTML);
-            prev = calc.innerHTML;
-          }
-        });
+    if (this.result.innerHTML.slice(-1) === '.') return;
 
-        if (this.duplicateSigns(this.signs) || this.result.innerHTML === '')
-          return;
-
-        this.result.innerHTML = this.result.innerHTML + calc.innerHTML;
-        prev = this.result.innerHTML.slice(-1);
-      });
+    this.signs.forEach(sign => {
+      if (
+        this.prev != calc.innerHTML &&
+        this.result.innerHTML.slice(-1).includes(sign)
+      ) {
+        this.result.innerHTML =
+          this.result.innerHTML.slice(0, this.result.innerHTML.length - 1) +
+          this.result.innerHTML.slice(-1).replace(this.prev, calc.innerHTML);
+        this.prev = calc.innerHTML;
+      }
     });
+
+    if (this.duplicateSigns(this.signs) || this.result.innerHTML === '') return;
+    this.result.innerHTML = this.result.innerHTML + calc.innerHTML;
+    this.prev = this.result.innerHTML.slice(-1);
   }
 
   replaceSigns = (resultChanged: string) => {
