@@ -231,11 +231,12 @@ class App {
   hasSign(signs: string[]) {
     let hasSign = false;
     let pos: number = 0;
+
     signs.forEach(sign => {
       if (this.result.innerHTML.startsWith('-')) {
         if (this.result.innerHTML.slice(1).includes(sign)) {
           hasSign = true;
-          pos = this.result.innerHTML.slice(1).indexOf(sign);
+          pos = this.result.innerHTML.slice(1).indexOf(sign) + 1;
         }
       } else {
         if (this.result.innerHTML.includes(sign)) {

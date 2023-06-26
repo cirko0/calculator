@@ -187,7 +187,7 @@ class App {
             if (this.result.innerHTML.startsWith('-')) {
                 if (this.result.innerHTML.slice(1).includes(sign)) {
                     hasSign = true;
-                    pos = this.result.innerHTML.slice(1).indexOf(sign);
+                    pos = this.result.innerHTML.slice(1).indexOf(sign) + 1;
                 }
             }
             else {
