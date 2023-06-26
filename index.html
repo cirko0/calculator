@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calculator</title>
     <link rel="stylesheet" href="style.css" />
-    <script defer src="script.js"></script>
+    <script type="module" src="dist/app.js"></script>
     <script
       defer
       src="https://kit.fontawesome.com/78e8c79e31.js"
@@ -21,9 +21,14 @@
     <p class="title-mini">Calculator</p>
     <p class="history">history</p>
     <div class="history__container">
+      <i class="fa-solid fa-xmark"></i>
       <div class="history__container--content"></div>
       <a id="clear-history">clear</a>
     </div>
+    <p class="history history__icon">
+      <i class="fa-solid fa-clock-rotate-left"></i>
+    </p>
+
     <div class="app">
       <div class="app--view">
         <div class="app--view-step">
@@ -31,7 +36,7 @@
         </div>
         <div class="app--view-result">
           <p>=</p>
-          <p id="result"></p>
+          <p id="result">0</p>
         </div>
       </div>
       <div class="app--numbers">

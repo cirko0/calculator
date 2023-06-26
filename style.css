@@ -26,17 +26,6 @@ html {
   overflow: hidden;
 }
 
-@media only screen and (max-width: 1280px) {
-  html {
-    font-size: calc(100vw / 1280 * 10);
-  }
-}
-
-@media only screen and (max-width: 768px) {
-  html {
-    font-size: calc(100vw / 768 * 10);
-  }
-}
 
 body {
   width: 100%;
@@ -80,6 +69,10 @@ body {
   margin-bottom: 4rem;
 }
 
+.history__icon{
+  display: none;
+}
+
 .history__container {
   /* opacity: 0; */
   position: absolute;
@@ -94,6 +87,16 @@ body {
   flex-direction: column;
   padding: 4rem 6rem;
   gap: 5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.history__container>i{
+  position: absolute;
+  top: 3.5rem;
+  right: 5.5rem;
+  display: none;
+  font-size: 3.5rem;
+  color: #c0c0c0;
 }
 
 .history__container > a {
@@ -187,7 +190,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: all 1s ease;
 }
+
 
 .app--view-step {
   font-size: 3.5rem;
@@ -260,9 +265,102 @@ body {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
+
+
+
+@media only screen and (max-width: 1280px) {
+  html {
+    font-size: calc(100vw / 1280 * 10);
+  }
+}
+
+
+
+
+@media only screen and (max-width: 1290px){
+  html{
+    overflow: hidden;
+  }
+  body{
+    overflow: hidden;
+  }
+  .history__container{
+    transform: translateX(100%);
+    z-index: 100;
+  }
+  .title{
+    left: -20rem
+  }
+  .history{
+    display: none;
+  }
+  .history__container>i{
+    display: block;
+  }
+  .history__icon{
+    z-index: 60;
+    color: white;
+    font-size: 2.5rem;
+    display: block;
+    right: 3rem;
+    top: 3.5rem;
+  }
+
+}
+
+
+@media only screen and (max-width: 1024px)
+{
+  html {
+    font-size: calc(100vw / 1024 * 10);
+  }
+  .title{
+    left: -30rem
+  }
+}
+
+@media only screen and (max-width: 770px){
+  .app--numbers p:hover{
+    box-shadow: none;
+  }
+  .title{
+    left: -35rem;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  html {
+    font-size: calc(100vw / 850 * 10);
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  html {
+    font-size: calc(100vw / 700 * 10);
+  }
+}
+
 @media only screen and (max-width: 486px) {
   .app {
     width: 100%;
+    border-radius: 0;
     height: 100%;
   }
+  .app--view{
+    height: 60%;
+  }
+  html{
+  font-size: calc(100vw / 450 * 10);
+  }
+  .title-mini{
+    z-index: 100;
+  }
+  .title{
+    display: none;
+  }
+
+}
+
+.open{
+  transform: translateX(5%);
 }
