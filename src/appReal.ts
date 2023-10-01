@@ -2,14 +2,13 @@
 // Validation
 // Transitions
 
-class App {
+class App1 {
   history: { step: string; result: string }[] = [];
   signs: string[] = ['+', '-', '÷', '×'];
   result: HTMLParagraphElement;
   step: HTMLParagraphElement;
   prev: string = '';
-  number: string = '';
-  default: string = '';
+
   constructor() {
     this.result = document.querySelector('#result')!;
     this.step = document.querySelector('#step')!;
@@ -76,30 +75,46 @@ class App {
       return;
     }
 
-    if (this.number === '0') {
-      this.number = this.number.replace('0', btn.innerHTML);
+    if (this.result.innerHTML === '0') {
+      this.result.innerHTML = this.result.innerHTML.replace('0', btn.innerHTML);
+      return;
     }
 
+    if (this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1) === '0') {
+      console.log(
+        this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1)
+      );
+      this.result.innerHTML =
+        this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
+        this.result.innerHTML
+          .slice(this.hasSign(this.signs).pos + 1)
+          .replace('0', btn.innerHTML);
+
+      return;
+    }
+
+    if (this.result.innerHTML.includes('.')) {
+      this.result.innerHTML = this.result.innerHTML + btn.innerHTML;
+      return;
+    }
     if (this.hasSign(this.signs).hasSign) {
-      this.number = this.result.innerHTML.slice(
-        this.hasSign(this.signs).pos + 1
-      );
+      this.result.innerHTML = this.result.innerHTML + btn.innerHTML;
 
-      this.number = this.number + btn.innerHTML;
+      this.result.innerHTML =
+        this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
+        this.formatNumber(
+          +this.unformatNumber(
+            this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1)
+          )
+        );
 
-      this.default = this.result.innerHTML.slice(
-        0,
-        this.hasSign(this.signs).pos + 1
-      );
-    } else {
-      this.number = this.number + btn.innerHTML;
+      return;
     }
+    this.result.innerHTML = this.result.innerHTML + btn.innerHTML;
 
-    this.result.innerHTML = this.default;
-
-    this.result.innerHTML =
-      this.result.innerHTML +
-      this.formatNumber(+this.unformatNumber(this.number));
+    this.result.innerHTML = this.formatNumber(
+      +this.unformatNumber(this.result.innerHTML)
+    );
   }
 
   addAndChangeSigns(calc: HTMLParagraphElement) {
@@ -121,12 +136,7 @@ class App {
       }
     });
 
-    if (
-      this.duplicateSigns(this.result.innerHTML, this.signs) ||
-      this.result.innerHTML === ''
-    )
-      return;
-
+    if (this.duplicateSigns(this.signs) || this.result.innerHTML === '') return;
     this.result.innerHTML = this.result.innerHTML + calc.innerHTML;
     this.prev = this.result.innerHTML.slice(-1);
   }
@@ -167,24 +177,64 @@ class App {
 
   deleteOne() {
     if (this.result.innerHTML.includes('.')) {
-      this.number = this.number.slice(0, this.number.length - 1);
-    } else {
-      this.number = this.number.slice(0, this.number.length - 1);
+      this.result.innerHTML = this.result.innerHTML.slice(
+        0,
+        this.result.innerHTML.length - 1
+      );
+      return;
     }
 
+    if (this.hasSign(this.signs)) {
+      if (
+        this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1).length > 2
+      ) {
+        this.result.innerHTML = this.result.innerHTML.slice(
+          0,
+          this.result.innerHTML.length - 1
+        );
+        this.result.innerHTML =
+          this.result.innerHTML.slice(0, this.hasSign(this.signs).pos + 1) +
+          this.formatNumber(
+            +this.unformatNumber(
+              this.result.innerHTML.slice(this.hasSign(this.signs).pos + 1)
+            )
+          );
+        return;
+      }
+      this.result.innerHTML = this.result.innerHTML.slice(
+        0,
+        this.result.innerHTML.length - 1
+      );
+
+      return;
+    }
+
+    this.result.innerHTML = this.result.innerHTML.slice(
+      0,
+      this.result.innerHTML.length - 1
+    );
     this.result.innerHTML = this.formatNumber(
-      +this.unformatNumber(this.number)
+      +this.unformatNumber(this.result.innerHTML)
     );
   }
 
   addDot(e: any) {
-    if (this.number === '') return;
-    if (this.duplicateSigns(this.number, ['.'])) return;
-    this.number = this.number + e.target.innerHTML;
-    this.result.innerHTML = this.default;
-    this.result.innerHTML =
-      this.result.innerHTML +
-      this.formatNumber(+this.unformatNumber(this.number));
+    if (this.result.innerHTML === '') return;
+    if (this.hasSign(this.signs).hasSign) {
+      if (
+        !this.result.innerHTML
+          .slice(this.hasSign(this.signs).pos + 1)
+          .includes('.') &&
+        !isNaN(+this.result.innerHTML.slice(-1))
+      ) {
+        this.result.innerHTML = this.result.innerHTML + e.target.innerHTML;
+      }
+
+      return;
+    }
+    if (this.duplicateSigns(['.'])) return;
+
+    this.result.innerHTML = this.result.innerHTML + e.target.innerHTML;
   }
 
   replaceSigns = (resultChanged: string) => {
@@ -216,14 +266,14 @@ class App {
     return { hasSign, pos };
   }
 
-  duplicateSigns = (content: string, signs: string[]) => {
+  duplicateSigns = (signs: string[]) => {
     let bool = false;
     signs.forEach(sign => {
-      if (content.startsWith('-')) {
-        if (content.slice(1).includes(sign)) {
+      if (this.result.innerHTML.startsWith('-')) {
+        if (this.result.innerHTML.slice(1).includes(sign)) {
           bool = true;
         }
-      } else if (content.includes(sign)) {
+      } else if (this.result.innerHTML.includes(sign)) {
         bool = true;
       }
     });
@@ -253,9 +303,9 @@ class App {
     btns.forEach(btn => {
       if (id === btn) {
         bool = true;
-        return;
+        return bool;
       }
-      return;
+      return; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     });
     return bool;
   };
@@ -268,31 +318,27 @@ class App {
   clearResult() {
     if (this.result.innerHTML === '') return;
     this.result.innerHTML = '';
-    this.number = '';
-    this.default = '';
     this.step.innerHTML = '';
   }
 
   changeSignOfNumber() {
-    if (this.number === '') return;
+    if (this.result.innerHTML === '') return;
 
-    if (this.number === '0') return;
+    if (this.result.innerHTML === '0') return;
 
-    if (this.hasSign(this.signs).hasSign) {
-      if (this.number.slice(0, 2).includes('(-')) {
-        this.number = this.number.replace('(-', '').slice(0, -1);
-      } else {
-        this.number = '(-' + this.number + ')';
-      }
-    } else {
-      if (this.number.slice(0, 1).includes('-')) {
-        this.number = this.number.replace('-', '');
-      } else {
-        this.number = '-' + this.number;
-      }
+    if (
+      !this.result.innerHTML.slice(0, 1).includes('-') &&
+      !this.hasSign(this.signs).hasSign
+    ) {
+      this.result.innerHTML = '-' + this.result.innerHTML;
+      return;
     }
-    this.result.innerHTML = this.default;
-    this.result.innerHTML = this.result.innerHTML + this.number;
+
+    if (
+      this.result.innerHTML.slice(0, 1).includes('-') &&
+      !this.hasSign(this.signs).hasSign
+    )
+      this.result.innerHTML = this.result.innerHTML.replace('-', '');
   }
 
   percentageNumber() {
@@ -327,9 +373,9 @@ class App {
 
     data.forEach(el => {
       const html = `<div class="history__container--content__item">
-          ${el.step}<br />
-          =${el.result}
-          </div>`;
+        ${el.step}<br />
+        =${el.result}
+        </div>`;
 
       document
         .querySelector('.history__container--content')!
@@ -338,20 +384,4 @@ class App {
   }
 }
 
-new App();
-
-class Validation {
-  constructor(public number: string, public result: HTMLParagraphElement) {}
-
-  validateNumber() {
-    if (this.number.length > 15) return true;
-    if (this.number.length > 12) {
-      this.result.style.fontSize = '4rem';
-      return false;
-    }
-
-    this.result.style.fontSize = '5rem';
-
-    return false;
-  }
-}
+new App1();

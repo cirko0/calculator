@@ -190,9 +190,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  overflow-y: scroll;
   transition: all 1s ease;
 }
-
+#result{
+  overflow-wrap: break-word;
+inline-size: 90%;
+transition: all 0.2ss ease-in-out;
+}
 
 .app--view-step {
   font-size: 3.5rem;
